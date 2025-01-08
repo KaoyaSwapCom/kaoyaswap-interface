@@ -1,0 +1,41 @@
+{
+    "name": "KaoyaSwap Menu",
+    "logoURI": "https://gateway.pinata.cloud/ipfs/QmTmAa8XufTwLmtNHUgoGW6d7gQLXzt53VigFDFbRBf9oF",
+    "keywords": [
+        "kaoyaswap",
+        "kaoya",
+        "swap"
+    ],
+    "timestamp": "2021-02-26T00:00:00+00:00",
+    "tokens": [
+        {
+            "address": "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
+            "chainId": 97,
+            "name": "Wrapped BNB",
+            "symbol": "WBNB",
+            "decimals": 18,
+            "logoURI": "https://gateway.pinata.cloud/ipfs/QmR4RLYaPkUPXNwXQ6Gu37d7x8NhReoA2qisVKUmE7SXAW"
+        },
+        {
+            "address": "0x81B4012Aacf10ca797337B7daCF208d8e00c6E9F",
+            "chainId": 97,
+            "name": "KaoyaToken",
+            "symbol": "KAOYA",
+            "decimals": 18,
+            "logoURI": "https://gateway.pinata.cloud/ipfs/QmTmAa8XufTwLmtNHUgoGW6d7gQLXzt53VigFDFbRBf9oF"
+        },
+        {
+            "address": "0xDc25d2F8eC9C2e351C996c2a9852178e722ef441",
+            "chainId": 97,
+            "name": "BUSD Token",
+            "symbol": "BUSD",
+            "decimals": 18,
+            "logoURI": "https://bscscan.com/token/images/busd_32.png"
+        }
+    ],
+    "version": {
+        "major": 0,
+        "minor": 4,
+        "patch": 0
+    }
+}
