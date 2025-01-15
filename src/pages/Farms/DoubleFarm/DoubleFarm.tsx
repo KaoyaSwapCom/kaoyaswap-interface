@@ -8,15 +8,22 @@ import { provider } from 'web3-core'
 import PageHeader from '../../../components/PageHeader'
 import Spacer from '../../../components/Spacer'
 
-import {useFarm} from '../../../hooks/useFarms'
+import { useFarm } from '../../../hooks/useFarms'
 import { getContract } from '../../../utils/erc20'
 
 import Harvest from './components/Harvest'
 import Stake from './components/Stake'
 import { useActiveWeb3React } from '../../../hooks'
 
+// Define the type for the route parameters
+interface RouteParams {
+  farmId: string;
+}
+
 const DoubleFarm: React.FC = () => {
-  const { farmId } = useParams()
+  // Use the defined type for useParams
+  const { farmId } = useParams<RouteParams>()
+
   const {
     pid,
     lpToken,
@@ -58,7 +65,7 @@ const DoubleFarm: React.FC = () => {
     <>
       <PageHeader
         icon={icon}
-        subtitle={`Deposit ${lpTokenName}  Tokens and earn ${earnTokenName}`}
+        subtitle={`Deposit ${lpTokenName} Tokens and earn ${earnTokenName}`}
         title={`${name} (Beta)`}
       />
       <StyledFarm>

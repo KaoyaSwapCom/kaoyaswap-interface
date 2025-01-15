@@ -13,10 +13,19 @@ import Option from './Option'
 import { SUPPORTED_WALLETS } from '../../constants'
 import { ExternalLink } from '../../theme'
 import MetamaskIcon from '../../assets/images/metamask.png'
+import CoinBaseIcon from '../../assets/images/coinbaseWalletIcon.svg'
+// import CoinbaseIcon from '../../assets/images/coinbaseWalletIcon.svg'
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 import { injected } from '../../connectors'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { AbstractConnector } from '@web3-react/abstract-connector'
+import { WalletLinkConnector } from "@web3-react/walletlink-connector";
+
+const CoinbaseWallet = new WalletLinkConnector({
+  url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
+  appName: "Kaoyaswap",
+
+});
 
 const CloseIcon = styled.div`
   position: absolute;
@@ -152,6 +161,10 @@ export default function WalletModal({
     }
   }, [walletModalOpen])
 
+  const connectToCoinbase = () => {
+    activate(CoinbaseWallet); 
+  }
+
   // close modal when a connection is successful
   const activePrevious = usePrevious(active)
   const connectorPrevious = usePrevious(connector)
@@ -167,8 +180,11 @@ export default function WalletModal({
       if (connector === SUPPORTED_WALLETS[key].connector) {
         return (name = SUPPORTED_WALLETS[key].name)
       }
+      console.log('name2', name);
+
       return true
     })
+    console.log('name3', name);
     // log selected wallet
     ReactGA.event({
       category: 'Wallet',
@@ -195,17 +211,30 @@ export default function WalletModal({
 
   // get wallets user can switch too, depending on device/browser
   function getOptions() {
-    const isMetamask = window.ethereum && window.ethereum.isMetaMask
-    return Object.keys(SUPPORTED_WALLETS).map(key => {
-      const option = SUPPORTED_WALLETS[key]
-      // check for mobile options
-      if (isMobile) {
+    const isMetaMask = window.ethereum && window.ethereum.isMetaMask;
+    // const isCoinbase = window.ethereum && window.ethereum.isCoinbaseWallet; // Check for Coinbase
 
+    // if (window.ethereum) {
+    //   if (window.ethereum.isCoinbaseWallet) {
+    //     console.log("Coinbase Wallet detected!");
+    //   } else {
+    //     console.log("Other wallet detected, but not Coinbase.");
+    //   }
+    // } else {
+    //   console.log("No wallet extension found. Please install Coinbase Wallet.");
+    // }
+
+
+    return Object.keys(SUPPORTED_WALLETS).map(key => {
+      const option = SUPPORTED_WALLETS[key];
+
+      // Check for mobile options
+      if (isMobile) {
         if (!window.web3 && !window.ethereum && option.mobile) {
           return (
             <Option
               onClick={() => {
-                option.connector !== connector && !option.href && tryActivation(option.connector)
+                option.connector !== connector && !option.href && tryActivation(option.connector);
               }}
               id={`connect-${key}`}
               key={key}
@@ -216,64 +245,93 @@ export default function WalletModal({
               subheader={null}
               icon={require('../../assets/images/' + option.iconName)}
             />
-          )
+          );
         }
-        return null
+        return null;
       }
 
-      // overwrite injected when needed
+      // For MetaMask and Coinbase wallet
       if (option.connector === injected) {
-        // don't show injected if there's no injected provider
+        // Check if MetaMask or Coinbase is not available
         if (!(window.web3 || window.ethereum)) {
           if (option.name === 'MetaMask') {
             return (
-              <Option
-                id={`connect-${key}`}
-                key={key}
-                color={'#E8831D'}
-                header={'Install Metamask'}
-                subheader={null}
-                link={'https://metamask.io/'}
-                icon={MetamaskIcon}
-              />
-            )
+              <>
+                <Option
+                  id={`connect-${key}`}
+                  key={key}
+                  color={'#E8831D'}
+                  header={'Install Metamask'}
+                  subheader={null}
+                  link={'https://metamask.io/'}
+                  icon={MetamaskIcon}
+                />
+              </>
+            );
+            // } else if (option.name === 'Coinbase') {
+            //   return (
+            //     <Option
+            //       id={`connect-${key}`}
+            //       key={key}
+            //       color={'#0052FF'} // Adjust the color for Coinbase if needed
+            //       header={'Install Coinbase Wallet'}
+            //       subheader={null}
+            //       link={'https://www.coinbase.com/wallet'}
+            //       icon={CoinbaseIcon}
+            //     />
+            //   );
           } else {
-            return null //dont want to return install twice
+            return null
           }
         }
-        // don't return metamask if injected provider isn't metamask
-        else if (option.name === 'MetaMask' && !isMetamask) {
-          return null
+
+        // If MetaMask is available but not the correct wallet
+        else if (option.name === 'MetaMask' && !isMetaMask) {
+          return null;
         }
-        // likewise for generic
-        else if (option.name === 'Injected' && isMetamask) {
+
+        else if (option.name === 'Injected' && isMetaMask) {
           return null
         }
       }
 
-      // return rest of options
       return (
         !isMobile &&
         !option.mobileOnly && (
-          <Option
-            id={`connect-${key}`}
-            onClick={() => {
-              option.connector === connector
-                ? setWalletView(WALLET_VIEWS.ACCOUNT)
-                : !option.href && tryActivation(option.connector)
-            }}
-            key={key}
-            active={option.connector === connector}
-            color={option.color}
-            link={option.href}
-            header={option.name}
-            subheader={null} //use option.descriptio to bring back multi-line
-            icon={require('../../assets/images/' + option.iconName)}
-          />
+          <>
+            <Option
+              id={`connect-${key}`}
+              onClick={() => {
+                option.connector === connector
+                  ? setWalletView(WALLET_VIEWS.ACCOUNT)
+                  : !option.href && tryActivation(option.connector);
+              }}
+              key={key}
+              active={option.connector === connector}
+              color={option.color}
+              link={option.href}
+              header={option.name}
+              subheader={null}
+              icon={require('../../assets/images/' + option.iconName)}
+            />
+            <Option
+              id={`connect-${key}`}
+              onClick={connectToCoinbase}
+              key={key}
+              // active={option.connector === connector}
+              color={option.color}
+              // link={option.href}
+              header='Coinbase'
+              subheader={null}
+              icon={CoinBaseIcon}
+            />
+          </>
         )
-      )
-    })
+      );
+    });
   }
+
+
 
   function getModalContent() {
     if (error) {
@@ -334,7 +392,9 @@ export default function WalletModal({
               tryActivation={tryActivation}
             />
           ) : (
-            <OptionGrid>{getOptions()}</OptionGrid>
+            <>
+              <OptionGrid>{getOptions()}</OptionGrid>
+            </>
           )}
           {/* todo: link */}
           {walletView !== WALLET_VIEWS.PENDING && (

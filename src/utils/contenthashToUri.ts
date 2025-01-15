@@ -20,16 +20,22 @@ const UTF_8_DECODER = new TextDecoder()
  */
 export default function contenthashToUri(contenthash: string): string {
   const buff = hexToUint8Array(contenthash)
-  const codec = getCodec(buff as Buffer) // the typing is wrong for @types/multicodec
+
+  // Convert the Uint8Array to a Buffer
+  const buffer = Buffer.from(buff)
+
+  const codec = getCodec(buffer) // Now using the correct Buffer type
   switch (codec) {
     case 'ipfs-ns': {
-      const data = rmPrefix(buff as Buffer)
-      const cid = new CID(data)
+      const data = rmPrefix(buffer) // Use buffer here instead of casting
+      // Convert Buffer to Uint8Array by using the Buffer's internal ArrayBuffer
+      const cid = new CID(new Uint8Array(data.buffer, data.byteOffset, data.byteLength))
       return `ipfs://${toB58String(cid.multihash)}`
     }
     case 'ipns-ns': {
-      const data = rmPrefix(buff as Buffer)
-      const cid = new CID(data)
+      const data = rmPrefix(buffer) // Use buffer here instead of casting
+      // Convert Buffer to Uint8Array by using the Buffer's internal ArrayBuffer
+      const cid = new CID(new Uint8Array(data.buffer, data.byteOffset, data.byteLength))
       const multihash = decode(cid.multihash)
       if (multihash.name === 'identity') {
         return `ipns://${UTF_8_DECODER.decode(multihash.digest).trim()}`

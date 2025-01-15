@@ -1,7 +1,5 @@
 import React from 'react'
-import {
-  Button
-} from 'antd';
+import { Button } from 'antd'
 import Card from '../../Card'
 import CardContent from '../../CardContent'
 import CardIcon from '../../CardIcon'

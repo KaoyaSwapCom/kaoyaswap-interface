@@ -6,6 +6,7 @@ import { useWallet } from 'use-wallet'
 import { provider } from 'web3-core'
 import { Contract } from 'web3-eth-contract'
 
+
 import PageHeader from '../../../components/PageHeader'
 import Spacer from '../../../components/SpacerF'
 
@@ -20,8 +21,12 @@ import Stake from './components/Stake'
 import { useActiveWeb3React } from '../../../hooks'
 import { supportedStaking } from '../../../sushi/lib/constants/bsc'
 
+interface RouteParams {
+  symbol: string;
+}
+
 const Staking: React.FC = () => {
-  const { symbol } = useParams()
+  const { symbol } = useParams<RouteParams>()
   const { library } = useActiveWeb3React();
   const yam = useYam();
   const [selectedStaking, setStaking]: any = useState([])

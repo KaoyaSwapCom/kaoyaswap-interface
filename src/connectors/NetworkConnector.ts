@@ -10,6 +10,7 @@ interface NetworkConnectorArguments {
 // taken from ethers.js, compatible interface with web3 provider
 type AsyncSendable = {
   isMetaMask?: boolean
+  isCoinbaseWallet?: boolean; 
   host?: string
   path?: string
   sendAsync?: (request: any, callback: (error: any, response: any) => void) => void

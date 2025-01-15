@@ -1,19 +1,22 @@
 /// <reference types="react-scripts" />
 
 declare module 'jazzicon' {
-  export default function(diameter: number, seed: number): HTMLElement
+  export default function (diameter: number, seed: number): HTMLElement
 }
 
 declare module 'fortmatic'
 
 interface Window {
   ethereum?: {
-    isMetaMask?: true
-    on?: (...args: any[]) => void
-    removeListener?: (...args: any[]) => void
-  }
-  web3?: {}
+    isMetaMask?: true;
+    isCoinbaseWallet?: true; 
+    on?: (...args: any[]) => void;
+    removeListener?: (...args: any[]) => void;
+    request?: (args: { method: string; params?: Array<any> }) => Promise<any>;
+  };
+  web3?: {};
 }
+
 
 declare module 'content-hash' {
   declare function decode(x: string): string

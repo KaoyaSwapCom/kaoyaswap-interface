@@ -145,10 +145,10 @@ export const supportedPools = [
 export const supportedStaking = [
   {
     stakingAddress: {
-      42: '0x3a429b56de8ac171eEfA893533e675c5c2faFE06',
-      1: '0x3a429b56de8ac171eEfA893533e675c5c2faFE06',
-      97: '0x3a429b56de8ac171eEfA893533e675c5c2faFE06',
-      56: '0x3a429b56de8ac171eEfA893533e675c5c2faFE06',
+      42: '0x1520B33F8C1bA8f0027ea5db82442EC4b9D36328',
+      1: '0x1520B33F8C1bA8f0027ea5db82442EC4b9D36328',
+      97: '0x1520B33F8C1bA8f0027ea5db82442EC4b9D36328',
+      56: '0x1520B33F8C1bA8f0027ea5db82442EC4b9D36328',
     },
     stakeToken: '0xa8a33e365D5a03c94C3258A10Dd5d6dfE686941B',
     name: 'BNB-KY',

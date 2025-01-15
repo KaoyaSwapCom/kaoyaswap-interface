@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import {
-  Button
-} from 'antd';
-import { useWallet } from 'use-wallet'
+import { Button } from 'antd'
+import { useWeb3React } from '@web3-react/core'
+import { InjectedConnector } from '@web3-react/injected-connector'
 
 import metamaskLogo from '../../assets/img/metamask-fox.svg'
 import Modal, { ModalProps } from '../ModalF'
@@ -13,14 +12,31 @@ import ModalTitle from '../ModalTitle'
 
 import WalletCard from './components/WalletCard'
 
-const WalletProviderModal: React.FC<ModalProps> = ({ onDismiss }) => {
-  const { account, connect } = useWallet()
+const injected = new InjectedConnector({
+  supportedChainIds: [1, 3, 4, 5, 42], // Ethereum mainnet and testnets
+})
+
+interface WalletProviderModalProps extends ModalProps {
+  onDismiss?: () => void; // onDismiss is optional
+}
+
+const WalletProviderModal: React.FC<WalletProviderModalProps> = ({ onDismiss }) => {
+  const { activate, account, deactivate } = useWeb3React()
 
   useEffect(() => {
-    if (account) {
-      onDismiss?.()
+    if (account && onDismiss) {
+      onDismiss(); // Ensure onDismiss is called only when defined
     }
   }, [account, onDismiss])
+
+  const handleConnect = () => {
+    console.log('connect');
+    activate(injected)  
+  }
+
+  const handleDisconnect = () => {
+    deactivate()
+  }
 
   return (
     <Modal>
@@ -31,27 +47,26 @@ const WalletProviderModal: React.FC<ModalProps> = ({ onDismiss }) => {
           <StyledWalletCard>
             <WalletCard
               icon={<img src={metamaskLogo} style={{ height: 32 }} />}
-              onConnect={() => connect('injected')}
+              onConnect={handleConnect}
               title="Metamask"
             />
           </StyledWalletCard>
-          {/*<Spacer size="sm" />*/}
-          {/*<StyledWalletCard>*/}
-          {/*  <WalletCard*/}
-          {/*    icon={<img src={walletConnectLogo} style={{ height: 24 }} />}*/}
-          {/*    onConnect={() => connect('walletconnect')}*/}
-          {/*    title="WalletConnect"*/}
-          {/*  />*/}
-          {/*</StyledWalletCard>*/}
         </StyledWalletsWrapper>
       </ModalContent>
 
       <ModalActions>
-        <Button size="large" block onClick={onDismiss} >Cancel</Button>
+        <Button size="large" block onClick={onDismiss}>
+          Cancel
+        </Button>
+        {account && (
+          <Button size="large" block onClick={handleDisconnect}>
+            Disconnect
+          </Button>
+        )}
       </ModalActions>
     </Modal>
-  )
-}
+  );
+};
 
 const StyledWalletsWrapper = styled.div`
   display: flex;

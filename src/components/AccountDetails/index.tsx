@@ -230,6 +230,8 @@ export default function AccountDetails({
           SUPPORTED_WALLETS[k].connector === connector && (connector !== injected || isMetaMask === (k === 'METAMASK'))
       )
       .map(k => SUPPORTED_WALLETS[k].name)[0]
+      console.log('name', name);
+      
     return <WalletName>Connected with {name}</WalletName>
   }
 

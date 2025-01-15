@@ -1,11 +1,17 @@
 import React, { createContext, useCallback, useState } from 'react'
 import styled from 'styled-components'
 
+// Define the type for the modal content that expects onDismiss
+interface ModalContentProps {
+  onDismiss: () => void;
+}
+
+// Define the context type, specifying the `onDismiss` function
 interface ModalsContext {
-  content?: React.ReactNode,
-  isOpen?: boolean,
-  onPresent: (content: React.ReactNode, key?: string) => void,
-  onDismiss: () => void
+  content?: React.ReactNode;
+  isOpen?: boolean;
+  onPresent: (content: React.ReactNode, key?: string) => void;
+  onDismiss: () => void;
 }
 
 export const Context = createContext<ModalsContext>({
@@ -40,7 +46,7 @@ const Modals: React.FC = ({ children }) => {
       {isOpen && (
         <StyledModalWrapper>
           <StyledModalBackdrop onClick={handleDismiss} />
-          {React.isValidElement(content) && React.cloneElement(content, {
+          {React.isValidElement(content) && React.cloneElement(content as React.ReactElement<ModalContentProps>, {
             onDismiss: handleDismiss,
           })}
         </StyledModalWrapper>

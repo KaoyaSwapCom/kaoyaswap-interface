@@ -1,7 +1,6 @@
 import React, { useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 
-import { useParams } from 'react-router-dom'
 import { useWallet } from 'use-wallet'
 import { provider } from 'web3-core'
 
@@ -9,6 +8,7 @@ import PageHeader from '../../../components/PageHeader'
 import Spacer from '../../../components/SpacerF'
 
 import useYam from '../../../hooks/useYam'
+import { useParams } from 'react-router-dom'
 import { useFarm } from '../../../hooks/useFarms'
 import useRedeem from '../../../hooks/useRedeem'
 import { getContract } from '../../../utils/erc20'
@@ -18,8 +18,13 @@ import Harvest from './components/Harvest'
 import Stake from './components/Stake'
 import { useActiveWeb3React } from '../../../hooks'
 
+// Define the type for the route parameters
+interface RouteParams {
+  farmId: string;
+}
+
 const Farm: React.FC = () => {
-  const { farmId } = useParams()
+  const { farmId } = useParams<RouteParams>()
   const {
     pid,
     lpToken,
@@ -44,7 +49,7 @@ const Farm: React.FC = () => {
 
   const yam = useYam()
   const { library } = useActiveWeb3React()
-  
+
   const lpContract = useMemo(() => {
     return getContract(library.provider as provider, lpTokenAddress)
   }, [library, lpTokenAddress])

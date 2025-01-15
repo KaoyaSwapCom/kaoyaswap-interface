@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
+    "@coinbase/wallet-sdk": "^4.2.4",
     "@craco/craco": "5.6.4",
     "@sashimiswap/core": "^1.0.2",
     "@sashimiswap/periphery": "^1.0.1",
@@ -15,9 +16,10 @@
     "react-countup": "6.1.1",
     "react-if": "^3.4.3",
     "react-use": "^15.3.4",
-    "typescript": "3.8.3",
+    "typescript": "^5.7.3",
     "use-wallet": "0.8.0",
-    "web3": "1.2.11"
+    "web3": "1.2.11",
+    "web3modal": "^1.9.12"
   },
   "devDependencies": {
     "@ethersproject/experimental": "^5.0.1",

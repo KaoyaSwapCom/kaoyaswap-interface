@@ -15,8 +15,12 @@ import Harvest from './components/Harvest'
 import Stake from './components/Stake'
 import { useActiveWeb3React } from '../../../hooks'
 
+interface RouteParams {
+  farmId: string;
+}
+
 const DoubleFarm: React.FC = () => {
-  const { farmId } = useParams()
+  const { farmId } = useParams<RouteParams>()
   const {
     pid,
     lpToken,
