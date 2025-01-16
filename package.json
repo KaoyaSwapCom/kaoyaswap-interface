@@ -10,6 +10,7 @@
     "@sashimiswap/core": "^1.0.2",
     "@sashimiswap/periphery": "^1.0.1",
     "@sashimiswap/sdk": "1.0.5-bsc",
+    "@walletconnect/ethereum-provider": "^2.17.4",
     "antd": "^4.2.2",
     "bignumber.js": "9.0.0",
     "react-countdown": "2.2.1",

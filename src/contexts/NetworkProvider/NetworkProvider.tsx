@@ -98,9 +98,6 @@ export const switchToArbitrum = async () => {
   }
 };
 
-
-
-
   // const stakeTokens = async (amount: any) => {
   //   if (!signer) return;
 

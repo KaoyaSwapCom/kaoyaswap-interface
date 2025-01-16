@@ -5,6 +5,8 @@ import { isMobile } from 'react-device-detect'
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import usePrevious from '../../hooks/usePrevious'
 import { useWalletModalOpen, useWalletModalToggle } from '../../state/application/hooks'
+import WalletConnectProvider from '@walletconnect/web3-provider';
+import Web3 from 'web3';
 
 import Modal from '../Modal'
 import AccountDetails from '../AccountDetails'
@@ -13,6 +15,7 @@ import Option from './Option'
 import { SUPPORTED_WALLETS } from '../../constants'
 import { ExternalLink } from '../../theme'
 import MetamaskIcon from '../../assets/images/metamask.png'
+import WalletConnectIcon from '../../assets/img/WalletConnectLogo.png'
 import CoinBaseIcon from '../../assets/images/coinbaseWalletIcon.svg'
 // import CoinbaseIcon from '../../assets/images/coinbaseWalletIcon.svg'
 import { ReactComponent as Close } from '../../assets/images/x.svg'
@@ -20,12 +23,18 @@ import { injected } from '../../connectors'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { WalletLinkConnector } from "@web3-react/walletlink-connector";
+import Web3Modal from "web3modal";
+import { ethers } from "ethers";
 
 const CoinbaseWallet = new WalletLinkConnector({
   url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
   appName: "Kaoyaswap",
-
 });
+
+
+
+
+
 
 const CloseIcon = styled.div`
   position: absolute;
@@ -162,8 +171,36 @@ export default function WalletModal({
   }, [walletModalOpen])
 
   const connectToCoinbase = () => {
-    activate(CoinbaseWallet); 
+    activate(CoinbaseWallet);
   }
+
+  // WalletConnect configuration for V2
+  const connectWalletV2 = async () => {
+    try {
+      // Create a WalletConnect provider instance with the Infura ID
+      const provider = new WalletConnectProvider({
+        infuraId: "5d29edda196c4b6199e5f966dd4842a6", // Your Infura ID
+      });
+  
+      // Enable the provider to establish a connection and show the QR code
+      await provider.enable();
+  
+      // Once the provider is enabled, create a Web3 provider and get the signer
+      const web3Provider = new ethers.providers.Web3Provider(provider);
+      const signer = web3Provider.getSigner();
+      const address = await signer.getAddress();
+  
+      console.log("Connected Address:", address);
+    } catch (error) {
+      console.error("Connection failed:", error);
+      console.log("Error details:", error);  // Log the complete error object
+      if (error.code === 4001) {
+        console.log("User rejected the connection request");
+      } else {
+        console.log("Unknown error occurred");
+      }
+    }
+  };
 
   // close modal when a connection is successful
   const activePrevious = usePrevious(active)
@@ -212,6 +249,10 @@ export default function WalletModal({
   // get wallets user can switch too, depending on device/browser
   function getOptions() {
     const isMetaMask = window.ethereum && window.ethereum.isMetaMask;
+
+
+    // Monitor session updates
+
     // const isCoinbase = window.ethereum && window.ethereum.isCoinbaseWallet; // Check for Coinbase
 
     // if (window.ethereum) {
@@ -229,6 +270,21 @@ export default function WalletModal({
       const option = SUPPORTED_WALLETS[key];
 
       // Check for mobile options
+      // For mobile devices, just return WalletConnect option if it's available
+      if (isMobile && option.name === "WalletConnect") {
+        return (
+          <Option
+            id={'connectwallet'}
+            onClick={connectWalletV2}
+            key={key}
+            color={option.color}
+            header="WalletConnect"
+            subheader={null}
+            icon={WalletConnectIcon}
+          />
+        );
+      }
+
       if (isMobile) {
         if (!window.web3 && !window.ethereum && option.mobile) {
           return (
@@ -268,18 +324,18 @@ export default function WalletModal({
                 />
               </>
             );
-            // } else if (option.name === 'Coinbase') {
-            //   return (
-            //     <Option
-            //       id={`connect-${key}`}
-            //       key={key}
-            //       color={'#0052FF'} // Adjust the color for Coinbase if needed
-            //       header={'Install Coinbase Wallet'}
-            //       subheader={null}
-            //       link={'https://www.coinbase.com/wallet'}
-            //       icon={CoinbaseIcon}
-            //     />
-            //   );
+          } else if (option.name === 'WalletConnect') {
+            return (
+              <Option
+                id={'connectwallet'}
+                onClick={connectWalletV2}
+                key={key}
+                color={option.color}
+                header="WalletConnect"
+                subheader={null}
+                icon={WalletConnectIcon}
+              />
+            );
           } else {
             return null
           }
@@ -299,7 +355,7 @@ export default function WalletModal({
         !isMobile &&
         !option.mobileOnly && (
           <>
-            <Option
+            {/* <Option
               id={`connect-${key}`}
               onClick={() => {
                 option.connector === connector
@@ -313,9 +369,20 @@ export default function WalletModal({
               header={option.name}
               subheader={null}
               icon={require('../../assets/images/' + option.iconName)}
+            /> */}
+            <Option
+              id={'connectwallet'}
+              onClick={connectWalletV2}
+              key={key}
+              // active={option.connector === connector}
+              color={option.color}
+              // link={option.href}
+              header='WalletConnect'
+              subheader={null}
+              icon={WalletConnectIcon}
             />
             <Option
-              id={`connect-${key}`}
+              id={'coinbase'}
               onClick={connectToCoinbase}
               key={key}
               // active={option.connector === connector}
